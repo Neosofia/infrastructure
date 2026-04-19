@@ -1,11 +1,4 @@
 {
-  // ──────────────────────────────────────────────────────────────────────────
-  // Proxmox target host
-  // Must match the "Host" alias in your ~/.ssh/config (see setup instructions
-  // in os/proxmox/README.md).  Change this one line to retarget all  
-  // tasks AND the on-save deploy to a different Proxmox instance.
-  // ──────────────────────────────────────────────────────────────────────────
-  "proxmox.host": "pve0001",
 
   // ──────────────────────────────────────────────────────────────────────────
   // Run on Save — auto-deploys changed proxmox scripts/configs to the remote.
@@ -17,7 +10,7 @@
         "match": "os[\\\\/]proxmox[\\\\/].*\\.(sh|toml|cfg|json|env)$",
         "isAsync": true,
         "runIn": "backend",
-        "cmd": "ssh -n -T root@pve0001 mkdir -p /root/neosofia && scp -r \"${workspaceFolder}/os/proxmox\" root@pve0001:/root/neosofia/ && ssh -n -T root@pve0001 \"find /root/neosofia/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
+        "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia && scp -r \"${workspaceFolder}/os/proxmox\" root@$PROXMOX_HOST:/root/neosofia/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
       }
     ]
   },
