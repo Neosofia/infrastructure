@@ -29,14 +29,17 @@ EOF
 
   # Format the disk and make our first baseline backup
   # TBD: Don't hardcode host OS backups device
-  echo Yes | rear format /dev/$REAR_BACKUP_DEVICE
+  echo Yes | rear format $REAR_BACKUP_DEVICE
   rear -v mkbackup
 
 
-  # Setup the backup and restore cronjob
+  # Need to rethink how we're going to handle backups and restores with REAR.
+  # Also need to consider the integration with PBS and how we partition the backup disk.
   # TBD: need to lookup efi boot manager device vs hardcode 0000B
-  cat <<EOF >> /etc/crontab
-15  2    * * *   root    rear -v mkbackup; efibootmgr -n 000B; systemctl reboot
-EOF
+  #cat <<EOF >> /etc/crontab
+#15  2    * * *   root    rear -v mkbackup; efibootmgr -n 000B; systemctl reboot
+#EOF
+
+
 fi
 

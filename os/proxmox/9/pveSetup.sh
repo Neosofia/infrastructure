@@ -1,44 +1,46 @@
-#!/usr/bin/env bash
-
-export TERM=xterm
-
-set -euo pipefail
-
 # Point to main Debian Repos
 echo "Updating Proxmox VE Sources"
-cat <<QED >/etc/apt/sources.list
-deb http://deb.debian.org/debian trixie main contrib
-deb http://deb.debian.org/debian trixie-updates main contrib
-deb http://security.debian.org/debian-security trixie-security main contrib
-QED
+
+
 echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' >/etc/apt/apt.conf.d/no-trixie-firmware.conf
 
 if [[ -z "${PVE_KEY}" ]]; then
-  # Disable enterprise repo
+
   echo "Disabling 'pve-enterprise' repository"
-  cat <<QED >/etc/apt/sources.list.d/pve-enterprise.list
-# deb https://enterprise.proxmox.com/debian/pve trixie pve-enterprise
+  cat <<QED >/etc/apt/sources.list.d/pve-enterprise.sources
+Types: deb
+URIs: https://enterprise.proxmox.com/debian/pve
+Suites: trixie
+Components: pve-enterprise
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+Enabled: false
 QED
 
   echo "Enabling 'pve-no-subscription' repository"
-  cat <<QED >/etc/apt/sources.list.d/pve-install-repo.list
-deb http://download.proxmox.com/debian/pve trixie pve-no-subscription
+  cat <<QED >/etc/apt/sources.list.d/proxmox.sources
+Types: deb
+URIs: http://download.proxmox.com/debian/pve
+Suites: trixie
+Components: pve-no-subscription
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+
+Types: deb
+URIs: http://download.proxmox.com/debian/pve
+Suites: trixie
+Components: pve-test
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+Enabled: false
 QED
 
-  # Fix ceph repos
-  echo "Updating 'ceph package repositories'"
-  cat <<QED >/etc/apt/sources.list.d/ceph.list
-# deb https://enterprise.proxmox.com/debian/ceph-squid trixie enterprise
-# deb http://download.proxmox.com/debian/ceph-squid trixie no-subscription
-# deb https://enterprise.proxmox.com/debian/ceph-squid trixie enterprise
-# deb http://download.proxmox.com/debian/ceph-squid trixie no-subscription
+  cat <<QED >/etc/apt/sources.list.d/ceph.sources
+Types: deb
+URIs: https://enterprise.proxmox.com/debian/ceph-squid
+Suites: trixie
+Components: enterprise
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+Enabled: false
 QED
 
-  # Add test repo
-  echo "Adding 'pvetest' repository and set disabled"
-  cat <<QED >/etc/apt/sources.list.d/pvetest-for-beta.list
-# deb http://download.proxmox.com/debian/pve trixie pvetest
-QED
 
   # Get rid of nag
   echo "Disabling subscription nag"
@@ -57,6 +59,15 @@ echo "Starting apt-get updates"
 apt-get update
 apt-get -y dist-upgrade
 
+apt-get install -y btop nvtop librocm-smi64-1
+
+
+# Blank the physical console after 1 minute of inactivity.
+# consoleblank=60 is a generic kernel parameter safe for any machine.
+if ! grep -q "consoleblank" /etc/default/grub; then
+  sed -i 's/^GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 consoleblank=60"/' /etc/default/grub
+  update-grub
+fi
 
 
 # EAR Setup using Clevis and LUKS
