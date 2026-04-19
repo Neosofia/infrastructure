@@ -18,9 +18,16 @@ To streamline script development, this repository utilizes `.vscode/settings.jso
 
 1. **Install the VS Code Extension**: Search for and install the **Run on Save** extension by *emeraldwalk* (`emeraldwalk.RunOnSave`).
 2. **Passwordless SSH**: The hook executes transparently in the background and does not support password prompts. You must have an SSH key pair generated and your public key added into `/root/.ssh/authorized_keys` on the target Proxmox box.
-3. **SSH Target Hostname**: By default, the `settings.json` hook attempts to `scp`/`ssh` as `root@pve0001`. You must either:
-   * Keep your remote Proxmox box accessible via DNS as `pve0001`
-   * Open your local `~/.ssh/config` and map host `pve0001` to its real IP address.
-   * Open `.vscode/settings.json` and change the `root@pve0001` targets inside the `"cmd"` string to match your server's IP.
+3. **Set the `PROXMOX_HOST` environment variable**: The deploy command reads the target host from `$PROXMOX_HOST`. Export it in `~/.zshenv` (not `~/.zshrc` — VS Code's backend shell is non-interactive and only sources `~/.zshenv`):
+   ```sh
+   export PROXMOX_HOST=pve0001
+   ```
+   The value can be an SSH config alias or a direct IP address. Restart VS Code after editing `~/.zshenv`.
+4. **SSH alias (if using a hostname)**: If `PROXMOX_HOST` is a name rather than an IP, add a matching entry to `~/.ssh/config`:
+   ```
+   Host pve0001
+       HostName <ip-address>
+       User root
+   ```
 
-Once properly configured, hitting **Save** in VS Code will sync the workspace scripts over to `/root/neosofia/proxmox` on the remote server, normalize line endings to Linux (`LF`), and automatically apply execute (`chmod +x`) permissions.
+Once properly configured, hitting **Save** in VS Code will sync the workspace scripts over to `/root/neosofia/proxmox` on the remote server, normalize line endings to Linux (`LF`), and automatically apply execute (`chmod +x`) permissions. To retarget a different host, change `PROXMOX_HOST` in `~/.zshenv` and restart VS Code.
