@@ -1,0 +1,32 @@
+# Environment / secrets files — never commit these
+.env
+.env.*
+*.env
+!*.env.example
+ops.env
+~/.ops.env
+
+# Terraform / OpenTofu state and local config
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+.terraformrc
+terraform.rc
+
+# SSH keys
+*.pem
+*.key
+id_rsa
+id_ed25519
+id_ecdsa
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp

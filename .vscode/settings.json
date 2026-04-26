@@ -11,6 +11,12 @@
         "isAsync": true,
         "runIn": "backend",
         "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia && scp -r \"${workspaceFolder}/os/proxmox\" root@$PROXMOX_HOST:/root/neosofia/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
+      },
+      {
+        "match": "proxmox[\\\\/].*\\.(sh|toml|cfg|json)$",
+        "isAsync": true,
+        "runIn": "backend",
+        "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia/infrastructure && scp -r \"${workspaceFolder}/proxmox\" root@$PROXMOX_HOST:/root/neosofia/infrastructure/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/infrastructure/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/infrastructure/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
       }
     ]
   },
