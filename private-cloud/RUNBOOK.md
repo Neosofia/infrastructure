@@ -224,10 +224,26 @@ ssh root@$PVE_HOST "pct exec $CTID -- \
 ### Teardown
 
 ```bash
+# Remove a service CT
 ssh $PVE_HOST "pct stop $CTID && pct destroy $CTID"
 ```
 
 Wipes everything including data volumes. Re-run Steps 1–3 to rebuild from scratch.
+
+To tear down the shared LocalStack CT (destroys **all** seeded secrets across every service):
+
+```bash
+ssh $PVE_HOST "pct stop 190 && pct destroy 190"
+```
+
+---
+
+## CT inventory (dev)
+
+| CT ID | Hostname | IP | Role |
+|-------|----------|----|------|
+| 190 | secrets-dev | 10.0.0.190 | Shared LocalStack (Secrets Mgr) |
+| 120 | authentication-dev | 10.0.0.120 | Authentication service + runner |
 
 ---
 

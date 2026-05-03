@@ -2,6 +2,10 @@
 
 This repository contains all infrastructure-related scripts, configurations, and documentation for Neosofia.
 
+## Overview
+
+The purpose of these scripts is to establish a repeatable, fully-automated standard for infrastructure deployment and disaster recovery. All scripts should be kept up to date with the latest deployment targets and thoroughly commented on behavior.
+
 ## Structure
 
 *   `hypervisor/proxmox/9/`: Scripts for installing, configuring, and hardening Proxmox VE on bare metal. (Targeting Proxmox 9)
@@ -9,28 +13,12 @@ This repository contains all infrastructure-related scripts, configurations, and
 *   `public-cloud/aws/`: OpenTofu IaC for managing platform services in AWS.
 *   `corporate-systems/`: Non-platform operational tooling — email sieve filters, network appliance setup, etc.
 
-## Overview
 
-The purpose of these scripts is to establish a repeatable, fully-automated standard for infrastructure deployment and disaster recovery. All scripts should be kept up to date with the latest deployment targets and thoroughly commented on behavior.
+## Continued Reading
 
-## Remote Deployment (On-Save Hooks)
-
-To streamline script development, this repository utilizes `.vscode/settings.json` task rules to seamlessly push changes to a target Proxmox host locally each time you save a `.sh` or config file.
-
-### Setup Requirements:
-
-1. **Install the VS Code Extension**: Search for and install the **Run on Save** extension by *emeraldwalk* (`emeraldwalk.RunOnSave`).
-2. **Passwordless SSH**: The hook executes transparently in the background and does not support password prompts. You must have an SSH key pair generated and your public key added into `/root/.ssh/authorized_keys` on the target Proxmox box.
-3. **Set the `PROXMOX_HOST` environment variable**: The deploy command reads the target host from `$PROXMOX_HOST`. Export it in `~/.zshenv` (not `~/.zshrc` — VS Code's backend shell is non-interactive and only sources `~/.zshenv`):
-   ```sh
-   export PROXMOX_HOST=pve0001
-   ```
-   The value can be an SSH config alias or a direct IP address. Restart VS Code after editing `~/.zshenv`.
-4. **SSH alias (if using a hostname)**: If `PROXMOX_HOST` is a name rather than an IP, add a matching entry to `~/.ssh/config`:
-   ```
-   Host pve0001
-       HostName <ip-address>
-       User root
-   ```
-
-Once properly configured, hitting **Save** in VS Code will sync the workspace scripts over to `/root/neosofia/proxmox` on the remote server, normalize line endings to Linux (`LF`), and automatically apply execute (`chmod +x`) permissions. To retarget a different host, change `PROXMOX_HOST` in `~/.zshenv` and restart VS Code.
+- [hypervisor/README.md](hypervisor/README.md) — Proxmox VE host setup
+- [hypervisor/proxmox/9/README.md](hypervisor/proxmox/9/README.md) — Proxmox 9 install and hardening scripts
+- [private-cloud/README.md](private-cloud/README.md) — LXC container management and on-save deploy hooks
+- [private-cloud/RUNBOOK.md](private-cloud/RUNBOOK.md) — Full operations guide: CT provisioning, DNS, secrets, deploy, teardown
+- [public-cloud/README.md](public-cloud/README.md) — OpenTofu IaC for AWS
+- [corporate-systems/README.md](corporate-systems/README.md) — Email, network, and hardware tooling
