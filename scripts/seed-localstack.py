@@ -17,7 +17,7 @@ Can be used two ways:
 
 Environment variables:
   SEED_SECRET_NAME   — required; Secrets Manager secret name
-                       (e.g. pdc/authentication/dev/env)
+                       (e.g. cdp/authentication/dev/env)
   SEED_ENV_FILE      — required; path to a .env file whose key=value pairs
                        become the JSON secret body
   SEED_MODE          — optional; "create" (default) skips if secret exists;

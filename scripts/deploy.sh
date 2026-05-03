@@ -83,7 +83,7 @@ docker compose \
 
 echo "==> Waiting for database to be healthy (up to 60s)"
 for i in $(seq 1 20); do
-  status=$(docker inspect --format='{{.State.Health.Status}}' pdc-auth-postgres 2>/dev/null)
+  status=$(docker inspect --format='{{.State.Health.Status}}' cdp-auth-postgres 2>/dev/null)
   if [[ "${status}" == "healthy" ]]; then
     echo "  Database is healthy."
     break

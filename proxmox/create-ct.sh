@@ -17,7 +17,7 @@
 #   PVE_HOST          SSH target for the Proxmox host (e.g. root@10.0.0.1)
 #   GHA_RUNNER_TOKEN  Repo-level runner registration token (expires after 1 h)
 #                     Generate at: GitHub → <owner>/<repo> → Settings → Actions → Runners → New runner
-#   GHA_REPO          GitHub repo in owner/repo format (e.g. byoung/pdc)
+#   GHA_REPO          GitHub repo in owner/repo format (e.g. Neosofia/cdp)
 #   GHCR_USER         GitHub username (optional — only for private GHCR packages)
 #   GHCR_TOKEN        PAT with read:packages (optional — only for private GHCR packages)
 #   LOCALSTACK_URL    URL of the secrets service (default: http://10.0.0.190:4566)
@@ -57,7 +57,7 @@ if [[ -z "${GHA_RUNNER_TOKEN}" ]]; then
   exit 1
 fi
 if [[ -z "${GHA_REPO}" ]]; then
-  echo "ERROR: GHA_REPO is not set (expected owner/repo format, e.g. byoung/pdc)." >&2
+  echo "ERROR: GHA_REPO is not set (expected owner/repo format, e.g. Neosofia/cdp)." >&2
   echo "  Add it to ${OPS_ENV} or export it." >&2
   exit 1
 fi
