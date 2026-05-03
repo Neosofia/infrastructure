@@ -5,7 +5,7 @@
 # Portainer data is persisted in a named Docker volume.
 #
 # Usage:
-#   ./proxmox/bootstrap-portainer-ct.sh [CTID] [IP_ADDR]
+#   ./private-cloud/containers/bootstrap-portainer-ct.sh [CTID] [IP_ADDR]
 #
 # Arguments (required):
 #   CTID     Container ID to bootstrap (e.g. 114)

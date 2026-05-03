@@ -1,2 +1,25 @@
 Neosofia Infrastructure
 Copyright 2026 Neosofia
+
+---
+
+This repository contains scripts that download or interact with the following
+third-party software at runtime. These projects are not distributed here; their
+licenses govern their respective binaries and source code.
+
+Proxmox Virtual Environment
+  https://www.proxmox.com/en/proxmox-virtual-environment
+  License: GNU Affero General Public License v3.0 (AGPL-3.0)
+  Used by: hypervisor/proxmox/9/prepareMedia.sh (downloads official ISO and uses
+  proxmox-auto-install-assistant to create unattended install media),
+  private-cloud/containers/ (manages LXC containers via pct on a running PVE host)
+
+t2-ubuntu-repo (AdityaGarg8)
+  https://github.com/AdityaGarg8/t2-ubuntu-repo
+  License: GNU General Public License v2.0 (GPL-2.0)
+  Used by: corporate-systems/hardware/t2MacSetup.sh (installs t2fanrd fan control daemon)
+
+pve-edge-kernel-t2 (AdityaGarg8)
+  https://github.com/AdityaGarg8/pve-edge-kernel-t2
+  License: GNU General Public License v2.0 (GPL-2.0)
+  Used by: corporate-systems/hardware/t2MacSetup.sh (installs T2 Mac-patched PVE kernel)

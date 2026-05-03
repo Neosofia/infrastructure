@@ -12,6 +12,17 @@
 
 # Proxmox Setup
 
+> [!WARNING]
+> **Production and staging environments require a paid Proxmox VE subscription.**
+> These scripts disable the community-edition subscription nag screen, which is
+> legitimate for development and test use. However, running without a subscription
+> in a production or regulated environment means you receive no vendor security
+> patches, no enterprise repository access, and no support SLA. For any environment
+> handling real data or subject to compliance requirements (SOC 2, HIPAA, etc.),
+> purchase an appropriate [Proxmox VE subscription](https://www.proxmox.com/en/proxmox-ve/pricing)
+> before go-live. Lack of vendor support for core infrastructure is a material
+> finding in most security audits.
+
 In order to run corporate services and applications, Neosofia has elected to use Proxmox for virtualization. To support our compliance by design objective, the following procedures are followed in order to create the system that will automatically back up and restore the entire operating system on a daily basis. These scripts also support our [policies](/website/qms/policies.md) by setting up:
  * Encryption at Rest ([EAR][ear]) for the [PVE][pve] backup device
  * [REAR][rear] setup for automated host level backup and recovery

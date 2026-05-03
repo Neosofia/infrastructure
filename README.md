@@ -4,7 +4,10 @@ This repository contains all infrastructure-related scripts, configurations, and
 
 ## Structure
 
-*   `/os/proxmox/9/`: Scripts for setting up, configuring, and provisioning Proxmox VE servers from raw metal to a fully functioning cluster node. (Targeting Proxmox 9)
+*   `hypervisor/proxmox/9/`: Scripts for installing, configuring, and hardening Proxmox VE on bare metal. (Targeting Proxmox 9)
+*   `private-cloud/containers/`: Scripts for managing LXC containers and deploying services inside a running Proxmox host.
+*   `public-cloud/aws/`: OpenTofu IaC for managing platform services in AWS.
+*   `corporate-systems/`: Non-platform operational tooling — email sieve filters, network appliance setup, etc.
 
 ## Overview
 

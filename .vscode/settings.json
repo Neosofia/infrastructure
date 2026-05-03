@@ -7,16 +7,16 @@
   "emeraldwalk.runonsave": {
     "commands": [
       {
-        "match": "os[\\\\/]proxmox[\\\\/].*\\.(sh|toml|cfg|json|env)$",
+        "match": "hypervisor[\\\\/]proxmox[\\\\/].*\\.(sh|toml|cfg|json|env)$",
         "isAsync": true,
         "runIn": "backend",
-        "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia && scp -r \"${workspaceFolder}/os/proxmox\" root@$PROXMOX_HOST:/root/neosofia/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
+        "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia && scp -r \"${workspaceFolder}/hypervisor/proxmox\" root@$PROXMOX_HOST:/root/neosofia/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
       },
       {
-        "match": "proxmox[\\\\/].*\\.(sh|toml|cfg|json)$",
+        "match": "private-cloud[\\\\/]containers[\\\\/].*\\.(sh|toml|cfg|json)$",
         "isAsync": true,
         "runIn": "backend",
-        "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia/infrastructure && scp -r \"${workspaceFolder}/proxmox\" root@$PROXMOX_HOST:/root/neosofia/infrastructure/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/infrastructure/proxmox -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/infrastructure/proxmox -type f -name '*.sh' -exec chmod +x {} +\""
+        "cmd": "ssh -n -T root@$PROXMOX_HOST mkdir -p /root/neosofia/infrastructure/private-cloud && scp -r \"${workspaceFolder}/private-cloud/containers\" root@$PROXMOX_HOST:/root/neosofia/infrastructure/private-cloud/ && ssh -n -T root@$PROXMOX_HOST \"find /root/neosofia/infrastructure/private-cloud/containers -type f -exec sed -i 's/\\r$//' {} + && find /root/neosofia/infrastructure/private-cloud/containers -type f -name '*.sh' -exec chmod +x {} +\""
       }
     ]
   },

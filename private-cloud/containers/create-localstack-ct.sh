@@ -7,7 +7,7 @@
 # before any service deploy is attempted.
 #
 # Usage:
-#   ./proxmox/create-localstack-ct.sh [ctid] [ip-cidr]
+#   ./private-cloud/containers/create-localstack-ct.sh [ctid] [ip-cidr]
 #
 # Defaults:
 #   ctid    190
@@ -133,7 +133,7 @@ log "Installing seed-localstack.py into CT ${CTID}..."
 
 pve "pct exec ${CTID} -- apt-get install -y -qq python3-boto3"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/scripts"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 pve "pct exec ${CTID} -- mkdir -p /opt/neosofia/scripts"
 pve "pct push ${CTID} ${SCRIPT_DIR}/seed-localstack.py /opt/neosofia/scripts/seed-localstack.py --perms 0755"
 

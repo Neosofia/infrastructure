@@ -5,7 +5,7 @@
 # issues pct commands there. Idempotent: exits cleanly if the CT already exists.
 #
 # Usage:
-#   ./proxmox/create-portainer-ct.sh [CTID] [IP_ADDR]
+#   ./private-cloud/containers/create-portainer-ct.sh [CTID] [IP_ADDR]
 #
 # Arguments (required):
 #   CTID     Container ID (e.g. 114)
@@ -132,4 +132,4 @@ log "CT ${CTID} is ready."
 log "  Hostname : ${HOSTNAME}"
 log "  IP       : ${IP_ADDR%/*}"
 log ""
-log "Next: run ./proxmox/bootstrap-portainer-ct.sh ${CTID} ${IP_ADDR%/*} to deploy Portainer."
+log "Next: run ./private-cloud/containers/bootstrap-portainer-ct.sh ${CTID} ${IP_ADDR%/*} to deploy Portainer."

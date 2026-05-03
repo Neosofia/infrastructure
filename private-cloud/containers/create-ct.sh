@@ -7,11 +7,11 @@
 # involvement is needed after first-time secret seeding.
 #
 # Usage:
-#   ./proxmox/create-ct.sh <service-name> <ctid> <ip-cidr>
+#   ./private-cloud/containers/create-ct.sh <service-name> <ctid> <ip-cidr>
 #
 # Example:
-#   ./proxmox/create-ct.sh authentication 121 10.0.0.121/10
-#   ./proxmox/create-ct.sh my-new-service 130 10.0.0.130/10
+#   ./private-cloud/containers/create-ct.sh authentication 121 10.0.0.121/10
+#   ./private-cloud/containers/create-ct.sh my-new-service 130 10.0.0.130/10
 #
 # Reads from ~/.ops.env or $OPS_ENV:
 #   PVE_HOST          SSH target for the Proxmox host (e.g. root@10.0.0.1)
@@ -170,7 +170,7 @@ pve "pct exec ${CTID} -- bash -c '
 # Copy scripts from the infrastructure repo into the CT.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 for script in seed-localstack.py resolve-image-tag.py deploy.sh; do
-  pve "cat > /tmp/${script}" < "${SCRIPT_DIR}/../scripts/${script}"
+  pve "cat > /tmp/${script}" < "${SCRIPT_DIR}/${script}"
   pve "pct push ${CTID} /tmp/${script} /opt/neosofia/scripts/${script} --perms 0755"
   pve "rm /tmp/${script}"
 done
@@ -268,7 +268,7 @@ log ""
 log " From your operator machine:"
 log ""
 log "   cd infrastructure"
-log "   bash scripts/seed-ct-env.sh ${SERVICE_NAME} /path/to/${SERVICE_NAME}/.env"
+log "   bash private-cloud/containers/seed-ct-env.sh ${SERVICE_NAME} /path/to/${SERVICE_NAME}/.env"
 log ""
 log " Then trigger a deploy by pushing a tag from the service repo:"
 log "   git tag <service>/<YYYY.MM.DD> && git push origin <tag>"

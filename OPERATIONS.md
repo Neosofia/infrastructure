@@ -14,8 +14,8 @@ A running Proxmox VE 9 host reachable over SSH.  All scripts SSH into the PVE
 host as root and issue `pct` commands — no direct SSH into individual CTs is
 required.
 
-Use the scripts in [`os/proxmox/9/`](os/proxmox/9/) to provision and harden a
-fresh Proxmox node.  See [`os/proxmox/9/README.md`](os/proxmox/9/README.md)
+Use the scripts in [`hypervisor/proxmox/9/`](hypervisor/proxmox/9/) to provision and harden a
+fresh Proxmox node.  See [`hypervisor/proxmox/9/README.md`](hypervisor/proxmox/9/README.md)
 for the full procedure, then run in order:
 
 ### 2. ops.env
@@ -59,7 +59,7 @@ running permanently.
 
 ```bash
 cd ~/projects/neosofia/infrastructure
-./proxmox/create-localstack-ct.sh        # uses defaults: ctid=190, ip=10.0.0.190/10
+./private-cloud/containers/create-localstack-ct.sh        # uses defaults: ctid=190, ip=10.0.0.190/10
 ```
 
 What it does:
@@ -88,7 +88,7 @@ runner label and the `/etc/<service-name>/env` secrets path.
 #   GHA_RUNNER_TOKEN=<token>
 
 cd ~/projects/neosofia/infrastructure
-./proxmox/create-ct.sh authentication 120 10.0.0.120/10
+./private-cloud/containers/create-ct.sh authentication 120 10.0.0.120/10
 ```
 
 What it does:
@@ -119,7 +119,7 @@ $EDITOR .local.env              # fill in WORKOS_CLIENT_ID, WORKOS_API_KEY, PUBL
 
 # 2. Push to the secrets service
 cd ~/projects/neosofia/infrastructure
-bash scripts/seed-ct-env.sh authentication /path/to/authentication/.dev.env
+bash private-cloud/containers/seed-ct-env.sh authentication /path/to/authentication/.dev.env
 ```
 
 See the service's `OPS-CLOUD.md` for details on each variable.
@@ -154,10 +154,10 @@ To add a second service (e.g. `my-new-service` on CT 130):
 
 ```bash
 # 1. Provision the CT
-./proxmox/create-ct.sh my-new-service 130 10.0.0.130/10
+./private-cloud/containers/create-ct.sh my-new-service 130 10.0.0.130/10
 
 # 2. Seed secrets (run from the service directory after generating .env)
-bash scripts/seed-ct-env.sh my-new-service /path/to/my-new-service/.env
+bash private-cloud/containers/seed-ct-env.sh my-new-service /path/to/my-new-service/.env
 
 # 3. Push a tag from the service repo
 #    git tag my-new-service/v1.0.0 && git push origin my-new-service/v1.0.0

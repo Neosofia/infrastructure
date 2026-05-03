@@ -6,11 +6,11 @@
 # No service CT stores a copy of the env file between deploys.
 #
 # Usage:
-#   ./scripts/seed-ct-env.sh <service-name> [env-file]
+#   ./private-cloud/containers/seed-ct-env.sh <service-name> [env-file]
 #
 # Example:
-#   ./scripts/seed-ct-env.sh authentication
-#   ./scripts/seed-ct-env.sh authentication /path/to/custom.env
+#   ./private-cloud/containers/seed-ct-env.sh authentication
+#   ./private-cloud/containers/seed-ct-env.sh authentication /path/to/custom.env
 #
 # Arguments:
 #   service-name  Name of the service (e.g. authentication)
