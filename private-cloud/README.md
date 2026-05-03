@@ -8,4 +8,6 @@ Scripts for managing LXC containers and services inside a running Proxmox VE hos
 
 ## Usage
 
-See the top-level [OPERATIONS.md](../OPERATIONS.md) for the full step-by-step runbook.
+See the [RUNBOOK.md](RUNBOOK.md) for the repeatable service operations guide (CT provisioning,
+DNS/NetBird setup, secret seeding, deploy, rotate, teardown). The top-level
+[OPERATIONS.md](../OPERATIONS.md) covers initial environment bootstrap.
