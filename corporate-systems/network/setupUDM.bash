@@ -4,7 +4,7 @@
 # bind-mounted into an LXC container running a media server and a scheduled
 # downloader job.
 #
-# Lessons learned the hard way (April 2026):
+# Lessons learned the hard way (April–May 2026):
 #
 # - UniFiOS 4.x ships NO kernel nfsd and no podman. NFS server on the UDM is
 #   not an option without replacing UniFiOS. CIFS is the only path.
@@ -20,6 +20,16 @@
 #   presents as "/mnt/media is locked up". `nobrl` on the client prevents
 #   this class of failure. If you ever see it again, clear the zombies on
 #   the UDM with `smbcontrol smbd close-share "UDM Shared"`.
+# - UniFiOS 5.x (firmware v5.1+, May 2026) changed the HDD mount path.
+#   Previously the drive was mounted at /volume1; now it is mounted at
+#   /volume/<filesystem-UUID> (e.g. /volume/95d31504-efed-429a-93ef-e06095145cb5).
+#   The drive itself is wrapped in a single-member Linux software RAID (md3)
+#   even though there is only one disk -- Ubiquiti does this so adding a
+#   second drive later just adds a RAID member without reformatting.
+#   This script creates a stable /volume1 symlink pointing at the real mount
+#   so smb.conf does not need to change across firmware updates. To find the
+#   current real path manually:
+#     lsblk -rno FSTYPE,MOUNTPOINT | awk '$1=="ext4" && $2~/^\/volume\// {print $2; exit}'
 
 set -euo pipefail
 
@@ -29,9 +39,23 @@ set -euo pipefail
 # Single drive in slot 1, shared publicly on the LAN (guest-readable).
 
 sudo apt update && sudo apt install -y samba
-sudo systemctl restart smbd nmbd
 
-cat <<QED >> /etc/samba/smb.conf
+# Resolve the HDD mount point dynamically -- the path changed in UniFiOS 5.x
+# from /volume1 to /volume/<filesystem-UUID>. Create a stable /volume1 symlink
+# so smb.conf never needs updating after a firmware upgrade.
+VOLUME_REAL=$(lsblk -rno FSTYPE,MOUNTPOINT | awk '$1=="ext4" && $2~/^\/volume\// {print $2; exit}')
+if [[ -z "$VOLUME_REAL" ]]; then
+    echo "ERROR: could not find HDD mount point. Check: lsblk -rno FSTYPE,MOUNTPOINT" >&2
+    exit 1
+fi
+ln -sfn "$VOLUME_REAL" /volume1
+echo "HDD mounted at $VOLUME_REAL; /volume1 -> $VOLUME_REAL"
+
+mkdir -p /volume1/shared
+
+# Append share config only if [UDM Shared] is not already present
+if ! grep -q '\[UDM Shared\]' /etc/samba/smb.conf; then
+    cat <<QED >> /etc/samba/smb.conf
 [global]
     guest account = nobody
 
@@ -43,6 +67,7 @@ cat <<QED >> /etc/samba/smb.conf
     create mask = 0666
     directory mask = 0777
 QED
+fi
 
 sudo systemctl restart smbd nmbd
 
