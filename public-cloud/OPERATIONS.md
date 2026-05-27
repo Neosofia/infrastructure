@@ -77,11 +77,11 @@ If a consumer's audience is missing from `JWT_WEB_AUDIENCE`, that service return
 
 ---
 
-## Healthcheck
+## Healthcheck and internal HTTP endpoints
 
-Orchestrators probe `GET /health` over **plain HTTP** on the container port. Flask-Talisman's `force_https` must **not** redirect that probe.
+Orchestrators probe `GET /health` over **plain HTTP** on the container port. Downstream services fetch `GET /.well-known/jwks.json` from authentication over the **private mesh** — also plain HTTP. Flask-Talisman's `force_https` must **not** redirect those paths.
 
-Python platform services exempt `/health` from the HTTPS redirect (capabilities **v0.5.8+**; apply the same pattern when forking from `templates/python/service`). A `302` on `/health` fails most platform healthchecks even when the service is otherwise healthy.
+Python platform services exempt `/health` from the HTTPS redirect (capabilities **v0.5.8+**; template **v0.7.1+**). Authentication exempts `/health` and `/.well-known/jwks.json` (**v0.26.1+**). A `302` on either path breaks healthchecks or JWT validation (`JWKS Error`, empty CDP menu).
 
 ---
 
@@ -97,6 +97,7 @@ Check these before debugging application code:
 | **`JWT_WEB_AUDIENCE` missing a consumer** | `401 Invalid token` on that consumer | Fix on **authentication** |
 | **`FRONTEND_URL` is internal/VPC-only** | Browser CORS failures | Must be the **public** UI origin |
 | **Healthcheck `302` on `/health`** | Deploy fails at healthcheck | Exempt `/health` from Talisman HTTPS redirect |
+| **JWKS `302` on internal fetch** | `401 Invalid token`, empty CDP menu, `Python-urllib` in auth access logs | Exempt `/.well-known/jwks.json` from Talisman HTTPS redirect on authentication |
 | **`JWT_PUBLIC_KEY` set incorrectly** | `401 Invalid token`; JWKS ignored | Remove or match auth's current PEM exactly |
 | **Quoted env values** | Malformed URLs | Do not wrap values in literal `"..."` in platform UIs |
 
