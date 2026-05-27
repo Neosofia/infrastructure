@@ -21,4 +21,6 @@ The purpose of these scripts is to establish a repeatable, fully-automated stand
 - [private-cloud/README.md](private-cloud/README.md) — LXC container management and on-save deploy hooks
 - [private-cloud/RUNBOOK.md](private-cloud/RUNBOOK.md) — Full operations guide: CT provisioning, DNS, secrets, deploy, teardown
 - [public-cloud/README.md](public-cloud/README.md) — OpenTofu IaC for AWS
+- [public-cloud/OPERATIONS.md](public-cloud/OPERATIONS.md) — platform service deployment (JWT, JWKS, PaaS networking)
+- [public-cloud/RUNBOOK.md](public-cloud/RUNBOOK.md) — OpenTofu/AWS apply runbook
 - [corporate-systems/README.md](corporate-systems/README.md) — Email, network, and hardware tooling

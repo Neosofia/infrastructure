@@ -138,6 +138,8 @@ Each environment should have its own backend config, tfvars, and state files.
 - Define service runtime dependencies in the repo's Dockerfile.
 - Keep cloud-specific environment variables in the service repo's CI/CD or
   deploy variables, not in the shared runbook.
+- **JWT, JWKS, CORS, healthcheck, and PaaS networking:** [OPERATIONS.md](OPERATIONS.md)
+  (canonical). Service repos link there; do not copy the full guide.
 
 ---
 

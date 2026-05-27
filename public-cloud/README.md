@@ -1,11 +1,14 @@
-# Public Cloud
+# Public cloud — Platform service operations
 
-OpenTofu IaC for managing platform services in a public cloud (initially AWS).
+Shared JWT, JWKS, CORS, healthcheck, and PaaS networking guidance for all platform services:
+
+**→ [OPERATIONS.md](OPERATIONS.md)**
 
 ## Sub-directories
 
 - [`aws/`](aws/) — AWS environments and reusable modules.
-- [`RUNBOOK.md`](RUNBOOK.md) — minimal public cloud deployment runbook.
+- [`OPERATIONS.md`](OPERATIONS.md) — platform service deployment patterns (JWKS, two traffic planes, gotchas).
+- [`RUNBOOK.md`](RUNBOOK.md) — OpenTofu/AWS apply runbook.
 
 ## Structure (planned)
 
