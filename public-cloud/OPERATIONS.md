@@ -121,9 +121,9 @@ curl -s https://<capabilities-host>/api/v1/capabilities
 # Authenticated endpoint (example)
 curl -s \
   -H "Authorization: Bearer <platform-jwt>" \
-  -H "X-Active-Role: admin" \
+  -H "X-Active-Role: operator" \
   https://<capabilities-host>/api/v1/capabilities/ui
-# → {"ui:menu:admin": true, ...}
+# → {"ui:menu:operator": true, ...}
 ```
 
 ---
