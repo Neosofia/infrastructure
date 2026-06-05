@@ -20,6 +20,11 @@
 #   presents as "/mnt/media is locked up". `nobrl` on the client prevents
 #   this class of failure. If you ever see it again, clear the zombies on
 #   the UDM with `smbcontrol smbd close-share "UDM Shared"`.
+# - Debian Samba defaults listen on all addresses (0.0.0.0:445). Restrict to
+#   RFC1918 192.168.0.0/16 via `interfaces` + `bind interfaces only` in
+#   smb.conf. On UniFiOS, CIDR alone is not enough -- also enumerate local
+#   192.168.* addresses from `ip addr`. setupUDM.bash replaces smb.conf
+#   wholesale on each run so reinstalls cannot leave a permissive [global].
 # - UniFiOS 5.x (firmware v5.1+, May 2026) changed the HDD mount path.
 #   Previously the drive was mounted at /volume1; now it is mounted at
 #   /volume/<filesystem-UUID> (e.g. /volume/95d31504-efed-429a-93ef-e06095145cb5).
@@ -33,10 +38,26 @@
 
 set -euo pipefail
 
+# Private LAN CIDR smbd may bind to. Override for a narrower scope, e.g.
+# SMB_INTERFACES=192.168.3.0/24 setupUDM.bash
+SMB_INTERFACES="${SMB_INTERFACES:-192.168.0.0/16}"
+
+# UniFiOS often ignores bare CIDR in `interfaces`; also list each local
+# 192.168.* address so smbd actually binds after `bind interfaces only = yes`.
+SMB_BIND_ADDRS=$(ip -4 -o addr show scope global \
+    | awk '$4 ~ /^192\.168\./ { split($4, a, "/"); print a[1] }' \
+    | sort -u | paste -sd' ' -)
+if [[ -z "$SMB_BIND_ADDRS" ]]; then
+    echo "ERROR: no 192.168.* addresses on this host; cannot bind smbd safely." >&2
+    ip -4 addr show scope global >&2 || true
+    exit 1
+fi
+SMB_INTERFACES_LINE="${SMB_INTERFACES} ${SMB_BIND_ADDRS} lo"
+
 # ---------------------------------------------------------------------------
 # UDM Pro Max: Samba server
 # ---------------------------------------------------------------------------
-# Single drive in slot 1, shared publicly on the LAN (guest-readable).
+# Single drive in slot 1, guest-writable on 192.168.0.0/16 only.
 
 sudo apt update && sudo apt install -y samba
 
@@ -53,11 +74,18 @@ echo "HDD mounted at $VOLUME_REAL; /volume1 -> $VOLUME_REAL"
 
 mkdir -p /volume1/shared
 
-# Append share config only if [UDM Shared] is not already present
-if ! grep -q '\[UDM Shared\]' /etc/samba/smb.conf; then
-    cat <<QED >> /etc/samba/smb.conf
+# Replace smb.conf on every run. Append-only left duplicate [global] stanzas
+# and never applied interface restrictions after apt reinstalls.
+SMB_CONF=/etc/samba/smb.conf
+if [[ -f "$SMB_CONF" ]]; then
+    cp -a "$SMB_CONF" "${SMB_CONF}.bak.$(date +%Y%m%d%H%M%S)"
+fi
+cat >"$SMB_CONF" <<QED
+# Managed by setupUDM.bash -- re-run this script to reconcile; do not hand-edit.
 [global]
     guest account = nobody
+    interfaces = ${SMB_INTERFACES_LINE}
+    bind interfaces only = yes
 
 [UDM Shared]
     path = /volume1/shared
@@ -67,7 +95,10 @@ if ! grep -q '\[UDM Shared\]' /etc/samba/smb.conf; then
     create mask = 0666
     directory mask = 0777
 QED
-fi
+
+testparm -s >/dev/null
+echo "smb.conf written; interfaces=${SMB_INTERFACES_LINE}"
+testparm -s 2>/dev/null | grep -A10 '\[UDM Shared\]'
 
 sudo systemctl restart smbd nmbd
 
@@ -165,6 +196,10 @@ sudo systemctl restart smbd nmbd
 # ---------------------------------------------------------------------------
 #
 # ON THE UDM (Samba server) -------------------------------------------------
+#
+#   # Confirm interface binding (should show 192.168.0.0/16, not 0.0.0.0):
+#   testparm -s 2>/dev/null | grep -iE 'interfaces|bind'
+#   ss -tlnp | grep -E ':445|:139'
 #
 #   # Active SMB sessions -- one line per client:
 #   smbstatus -b
