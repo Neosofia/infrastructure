@@ -84,6 +84,7 @@ cat >"$SMB_CONF" <<QED
 # Managed by setupUDM.bash -- re-run this script to reconcile; do not hand-edit.
 [global]
     guest account = nobody
+    map to guest = bad user
     interfaces = ${SMB_INTERFACES_LINE}
     bind interfaces only = yes
 
